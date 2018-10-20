@@ -1,7 +1,6 @@
 package com.sbapp.util;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
@@ -14,16 +13,16 @@ public class Helper {
      * @param directory - Directory Path
      * @param fileName - Name of the file
      * @param content - Content to add to file could be null
-     * @return Reader
+     * @return File
      */
-	public static Reader createFileWithDirectory(String directory, 
+	public static File createFileWithDirectory(String directory, 
 			String fileName, String content) throws IOException{
 		
 		Reader reader;
 			
 		File file = new File(directory + "/" + fileName);
 		if (file.isFile()) {
-			return new FileReader(file);
+			return file;
 		}
 		File dir = new File(directory);
 		if (!dir.isDirectory()) {
@@ -37,6 +36,6 @@ public class Helper {
 				writer.write(content);
 			}
 		}		    
-		return new FileReader(newFile);
+		return newFile;
 	}
 }

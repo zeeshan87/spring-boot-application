@@ -1,5 +1,6 @@
 package com.sbapp.dataaccessobject;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
@@ -28,8 +29,10 @@ public class EmployeeRepository {
 
     static {
         try (Reader reader = 
-        		Helper.createFileWithDirectory(ApplicationConstants.FILE_DIR, 
-        				ApplicationConstants.FILENAME, "[]")) {
+        		new FileReader(Helper.createFileWithDirectory(
+        				ApplicationConstants.FILE_DIR, 
+        				ApplicationConstants.FILENAME, "[]"))
+        	) {
             Type type = new TypeToken<List<EmployeeDO>>() {}.getType();
             employees = new Gson().fromJson(reader, type);
         } 

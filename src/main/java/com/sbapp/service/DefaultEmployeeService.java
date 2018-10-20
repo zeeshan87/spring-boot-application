@@ -1,7 +1,5 @@
 package com.sbapp.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +14,6 @@ import com.sbapp.exception.EntityNotFoundException;
 @Service
 public class DefaultEmployeeService implements EmployeeService
 {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultEmployeeService.class);
-
     private final EmployeeRepository employeeRepository;
 
 
@@ -40,15 +35,7 @@ public class DefaultEmployeeService implements EmployeeService
     public EmployeeDO create(EmployeeDO employeeDO) throws Exception
     {
     	EmployeeDO employee;
-        try
-        {
-        	employee = employeeRepository.create(employeeDO);
-        }
-        catch (Exception e)
-        {
-            LOG.warn("Exception while creating an employee: {}", employeeDO, e);
-            throw e;
-        }
+        employee = employeeRepository.create(employeeDO);
         return employee;
     }
     
