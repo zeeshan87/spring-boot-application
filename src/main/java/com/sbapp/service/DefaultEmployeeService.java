@@ -12,6 +12,8 @@ import com.sbapp.domainobject.EmployeeDO;
 import com.sbapp.domainvalue.Operator;
 import com.sbapp.domainvalue.Sort;
 import com.sbapp.exception.EntityNotFoundException;
+import com.sbapp.messaging.EmployeeNotificationPublisher;
+import com.sbapp.messaging.EmployeeNotificationSubscriber;
 import com.sbapp.util.EmployeeComparators;
 import com.sbapp.util.EmployeePredicates;
 
@@ -23,12 +25,22 @@ import com.sbapp.util.EmployeePredicates;
 public class DefaultEmployeeService implements EmployeeService
 {
     private final EmployeeRepository employeeRepository;
+    private final EmployeeNotificationPublisher publisher;
+    private final EmployeeNotificationSubscriber subscriber;
 
 
     @Autowired
-    public DefaultEmployeeService(final EmployeeRepository employeeRepository)
+    public DefaultEmployeeService(final EmployeeRepository employeeRepository,
+    		final EmployeeNotificationPublisher publisher,
+    		final EmployeeNotificationSubscriber subscriber)
     {
         this.employeeRepository = employeeRepository;
+        this.publisher = publisher;
+        this.subscriber = subscriber;
+        
+        // For the sake of simplicity both publisher and subscriber
+        // has been instantiated and used in the same place
+        publisher.addObserver(this.subscriber);
     }
 
 
@@ -71,6 +83,8 @@ public class DefaultEmployeeService implements EmployeeService
     public void delete(int employeeId) throws EntityNotFoundException, Exception
     {
     	employeeRepository.delete(employeeId);
+    	
+    	publisher.sendNotification("Employee with ID: " + employeeId + " deleted!");
     }
 
 
