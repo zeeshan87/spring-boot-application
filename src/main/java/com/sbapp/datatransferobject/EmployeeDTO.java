@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,15 +16,15 @@ public class EmployeeDTO
 	@ApiModelProperty(notes = "ID of the Employee", required = false, readOnly = true)
     private int id;
 
-    @NotNull(message = "Full Name can not be null!")
+	@NotBlank(message = "Full Name can not be null or empty!")
     @ApiModelProperty(notes = "Name of the Employee", required = true)
     private String fullName;
 
-    @NotNull(message = "Age can not be null!")
+    @Min(value = 18, message = "Age can not be less than 18!")
     @ApiModelProperty(notes = "Age of the Employee", required = true)
     private int age;
     
-    @NotNull(message = "Salary can not be null!")
+    @Min(value = 1, message = "Salary can not be zero!")
     @ApiModelProperty(notes = "Salary of the Employee", required = true)
     private int salary;
 

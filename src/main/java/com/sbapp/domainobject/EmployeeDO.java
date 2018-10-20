@@ -1,5 +1,7 @@
 package com.sbapp.domainobject;
 
+import java.util.Objects;
+
 public class EmployeeDO
 {
 
@@ -65,5 +67,20 @@ public class EmployeeDO
 	public void setSalary(int salary) {
 		this.salary = salary;
 	}
+	
+	/*
+	 * Method to compare strings based on id
+	 * for better searching (could be considered as a 
+	 * short way to find the index of the element in list)
+	 * CAUTION: I used it for the given purpose and as such
+	 * this particular implementation couldn't be appropriate for all cases.
+	 */
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeDO employee = (EmployeeDO) o;
+        return Objects.equals(id, employee.id);
+    }
     
 }

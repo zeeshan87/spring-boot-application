@@ -1,8 +1,8 @@
 package com.sbapp.service;
 
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sbapp.dataaccessobject.EmployeeRepository;
@@ -22,6 +22,7 @@ public class DefaultEmployeeService implements EmployeeService
     private final EmployeeRepository employeeRepository;
 
 
+    @Autowired
     public DefaultEmployeeService(final EmployeeRepository employeeRepository)
     {
         this.employeeRepository = employeeRepository;
@@ -48,6 +49,18 @@ public class DefaultEmployeeService implements EmployeeService
             throw e;
         }
         return employee;
+    }
+    
+    /**
+     * Updates an Employee against ID.
+     * @param employeeId
+     * @param employeeDO
+     */
+    @Override
+    public void update(int employeeId, EmployeeDO employeeDO) throws EntityNotFoundException, Exception
+    {
+    	employeeDO.setId(employeeId);
+    	employeeRepository.update(employeeDO);
     }
 
 }

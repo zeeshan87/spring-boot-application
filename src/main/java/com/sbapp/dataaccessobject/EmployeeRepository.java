@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sbapp.config.ApplicationConstants;
 import com.sbapp.domainobject.EmployeeDO;
+import com.sbapp.exception.EntityNotFoundException;
 import com.sbapp.util.Helper;
 
 /**
@@ -44,12 +45,39 @@ public class EmployeeRepository {
      * @return created Employee
      */
     public EmployeeDO create(EmployeeDO employeeDO) throws Exception {
-    	int id = employees.size() + 1;    	
+    	int id;
+    	int size = employees.size();
+    	if (size == 0) {
+    		id = 1;
+    	}
+    	else {
+    		id = employees.get(size - 1).getId() + 1; 
+    	}   	
     	employeeDO.setId(id);    	
     	employees.add(employeeDO);
     	save();
     	
     	return employeeDO;
+    }
+    
+    /**
+     * Updates an Employee.
+     *
+     * @param employeeDO
+     * @return created Employee
+     */
+    public void update(EmployeeDO employeeDO) throws EntityNotFoundException, Exception {
+    	// Index of works because it's comparing based 
+    	// on ID via overriden equalsTo method in EmployeeDO 
+    	int index = employees.indexOf(employeeDO);
+
+    	if (index == -1) {
+    		throw new EntityNotFoundException("Couldn't find an Employee with ID: " + employeeDO.getId());
+    	}
+    	else {
+    		employees.set(index, employeeDO);
+    		save();
+    	}
     }
 
     /**
