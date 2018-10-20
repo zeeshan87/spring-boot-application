@@ -43,6 +43,7 @@ public class EmployeeRepository {
      *
      * @param employeeDO
      * @return created Employee
+     * @throws Exception if some error occurs.
      */
     public EmployeeDO create(EmployeeDO employeeDO) throws Exception {
     	int id;
@@ -65,6 +66,8 @@ public class EmployeeRepository {
      *
      * @param employeeDO
      * @return created Employee
+     * @throws EntityNotFoundException if no Employee with the given id was found.
+     * @throws Exception if some error occurs.
      */
     public void update(EmployeeDO employeeDO) throws EntityNotFoundException, Exception {
     	// Index of works because it's comparing based 
@@ -77,6 +80,29 @@ public class EmployeeRepository {
     	else {
     		employees.set(index, employeeDO);
     		save();
+    	}
+    }
+    
+    /**
+     * Deletes an Employee.
+     *
+     * @param employeeId - ID of an Employee
+     * @throws EntityNotFoundException if no Employee with the given id was found.
+     * @throws Exception if some error occurs.
+     */
+    public void delete(int employeeId) throws EntityNotFoundException, Exception {
+    	// Place holder object with just ID because of overriden equalsTo method
+    	EmployeeDO employeeDO = new EmployeeDO(employeeId, "", 0, 0);
+    	
+    	// Remove works because it's comparing based 
+    	// on ID via overriden equalsTo method in EmployeeDO 
+    	boolean deleted = employees.remove(employeeDO);
+
+    	if (deleted) {
+    		save();    		
+    	}
+    	else {
+    		throw new EntityNotFoundException("Couldn't find an Employee with ID: " + employeeId);
     	}
     }
 

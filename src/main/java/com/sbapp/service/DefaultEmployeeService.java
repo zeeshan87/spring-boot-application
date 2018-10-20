@@ -34,6 +34,7 @@ public class DefaultEmployeeService implements EmployeeService
      *
      * @param employeeDO
      * @return created Employee
+     * @throws Exception if some error occurs.
      */
     @Override
     public EmployeeDO create(EmployeeDO employeeDO) throws Exception
@@ -55,12 +56,26 @@ public class DefaultEmployeeService implements EmployeeService
      * Updates an Employee against ID.
      * @param employeeId
      * @param employeeDO
+     * @throws EntityNotFoundException if no Employee with the given id was found.
+     * @throws Exception if some error occurs.
      */
     @Override
     public void update(int employeeId, EmployeeDO employeeDO) throws EntityNotFoundException, Exception
     {
     	employeeDO.setId(employeeId);
     	employeeRepository.update(employeeDO);
+    }
+    
+    /**
+     * Deleted an Employee.
+     * @param employeeId - ID of en Employee to be deleted
+     * @throws EntityNotFoundException if no Employee with the given id was found.
+     * @throws Exception if some error occurs.
+     */
+    @Override
+    public void delete(int employeeId) throws EntityNotFoundException, Exception
+    {
+    	employeeRepository.delete(employeeId);
     }
 
 }

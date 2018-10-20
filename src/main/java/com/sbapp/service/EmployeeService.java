@@ -10,4 +10,5 @@ public interface EmployeeService
 {
     EmployeeDO create(EmployeeDO employeeDO) throws Exception;
     void update(int employeeId, EmployeeDO employeeDO) throws EntityNotFoundException, Exception;
+    void delete(int employeeId) throws EntityNotFoundException, Exception;
 }

@@ -21,11 +21,11 @@ public class EmployeeDTO
     private String fullName;
 
     @Min(value = 18, message = "Age can not be less than 18!")
-    @ApiModelProperty(notes = "Age of the Employee", required = true)
+    @ApiModelProperty(notes = "Age of the Employee", required = true, allowableValues = "range[18,]")
     private int age;
     
     @Min(value = 1, message = "Salary can not be zero!")
-    @ApiModelProperty(notes = "Salary of the Employee", required = true)
+    @ApiModelProperty(notes = "Salary of the Employee", required = true, allowableValues = "range[1,]")
     private int salary;
 
     private EmployeeDTO()

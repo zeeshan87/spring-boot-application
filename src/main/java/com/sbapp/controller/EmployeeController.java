@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -60,5 +61,16 @@ public class EmployeeController
     {
     	EmployeeDO employeeDO = EmployeeMapper.makeEmployeeDO(employeeDTO);
     	employeeService.update(employeeId, employeeDO);
+    }
+    
+    @DeleteMapping(path ="/{employeeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation(value = "Deletes an Employee",
+    notes = "Provide valid ID for employee to be deleted")
+    public void deleteEmployee(
+        @PathVariable int employeeId)
+        throws EntityNotFoundException, Exception
+    {
+    	employeeService.delete(employeeId);
     }
 }
