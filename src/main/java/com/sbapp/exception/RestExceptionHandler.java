@@ -21,7 +21,7 @@ public class RestExceptionHandler {
 	
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<ErrorResponse> exceptionEntityNotFoundHandler(EntityNotFoundException ex) {
-		LOG.error("EntityNotFoundException occurred", ex);
+		LOG.warn("EntityNotFoundException occurred: " + ex.getMessage());
 		ErrorResponse error = new ErrorResponse();
 		error.setErrorCode(HttpStatus.NOT_FOUND.value());
 		error.setMessage(ex.getMessage());
@@ -30,19 +30,18 @@ public class RestExceptionHandler {
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> exceptionMethodArgumentNotValidHandler(MethodArgumentNotValidException ex) {
-		LOG.error("MethodArgumentNotValidException occurred", ex);
-		StringBuilder messages = new StringBuilder();
-		
+		StringBuilder messages = new StringBuilder();		
 		ex.getBindingResult().getAllErrors().forEach(entry -> messages.append(entry.getDefaultMessage() + "\n"));
 		ErrorResponse error = new ErrorResponse();
 		error.setErrorCode(HttpStatus.BAD_REQUEST.value());
 		error.setMessage(messages.toString());
+		LOG.warn("MethodArgumentNotValidException occurred: " + error.getMessage());
 		return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<ErrorResponse> exceptionMethodArgumentTypeMismatchHandler(MethodArgumentTypeMismatchException ex) {
-		LOG.error("MethodArgumentTypeMismatchException occurred", ex);
+		LOG.warn("MethodArgumentTypeMismatchException occurred " + ex.getMessage());
 		ErrorResponse error = new ErrorResponse();
 		error.setErrorCode(HttpStatus.BAD_REQUEST.value());
 		error.setMessage("Invalid path parameter");		
@@ -51,7 +50,7 @@ public class RestExceptionHandler {
 	
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity<ErrorResponse> exceptionHttpRequestMethodNotSupportedHandler(HttpRequestMethodNotSupportedException ex) {
-		LOG.error("HttpRequestMethodNotSupportedException occurred", ex);
+		LOG.warn("HttpRequestMethodNotSupportedException occurred " + ex.getMessage());
 		ErrorResponse error = new ErrorResponse();
 		error.setErrorCode(HttpStatus.METHOD_NOT_ALLOWED.value());
 		error.setMessage("This method is not allowed for this resource");		
