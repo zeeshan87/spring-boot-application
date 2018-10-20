@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -52,17 +53,29 @@ public class EmployeeRepository {
      * @throws Exception if some error occurs.
      */
     public EmployeeDO create(EmployeeDO employeeDO) throws Exception {
-    	int id;
-    	int size = employees.size();
-    	if (size == 0) {
-    		id = 1;
+    	// To save the current state of the list in case save to json file fails
+    	EmployeeDO[] currentState = employees.toArray(new EmployeeDO[0]);
+    	
+    	try {
+    		int id;
+        	int size = employees.size();
+        	if (size == 0) {
+        		id = 1;
+        	}
+        	else {
+        		id = employees.get(size - 1).getId() + 1; 
+        	}   	
+        	employeeDO.setId(id);    	
+        	employees.add(employeeDO);
+        	save();
     	}
-    	else {
-    		id = employees.get(size - 1).getId() + 1; 
-    	}   	
-    	employeeDO.setId(id);    	
-    	employees.add(employeeDO);
-    	save();
+    	catch(IOException ex) {
+    		// Reset the list to previous state (Transactional Workaround)
+    		employees.clear();
+    		employees.addAll(Arrays.asList(currentState));
+    		throw ex;
+    	}
+    	
     	
     	return employeeDO;
     }
@@ -84,8 +97,18 @@ public class EmployeeRepository {
     		throw new EntityNotFoundException("Couldn't find an Employee with ID: " + employeeDO.getId());
     	}
     	else {
-    		employees.set(index, employeeDO);
-    		save();
+    		// To save the current state of the list in case save to json file fails
+        	EmployeeDO[] currentState = employees.toArray(new EmployeeDO[0]);        	
+        	try {
+        		employees.set(index, employeeDO);
+        		save();
+        	}
+        	catch(IOException ex) {
+        		// Reset the list to previous state (Transactional Workaround)
+        		employees.clear();
+        		employees.addAll(Arrays.asList(currentState));
+        		throw ex;
+        	}
     	}
     }
     
@@ -97,19 +120,30 @@ public class EmployeeRepository {
      * @throws Exception if some error occurs.
      */
     public void delete(int employeeId) throws EntityNotFoundException, Exception {
-    	// Place holder object with just ID because of overriden equalsTo method
-    	EmployeeDO employeeDO = new EmployeeDO(employeeId, "", 0, 0);
+    	// To save the current state of the list in case save to json file fails
+    	EmployeeDO[] currentState = employees.toArray(new EmployeeDO[0]);
     	
-    	// Remove works because it's comparing based 
-    	// on ID via overriden equalsTo method in EmployeeDO 
-    	boolean deleted = employees.remove(employeeDO);
+    	try {
+    		// Place holder object with just ID because of overriden equalsTo method
+        	EmployeeDO employeeDO = new EmployeeDO(employeeId, "", 0, 0);
+        	
+        	// Remove works because it's comparing based 
+        	// on ID via overriden equalsTo method in EmployeeDO 
+        	boolean deleted = employees.remove(employeeDO);
 
-    	if (deleted) {
-    		save();    		
+        	if (deleted) {
+        		save();    		
+        	}
+        	else {
+        		throw new EntityNotFoundException("Couldn't find an Employee with ID: " + employeeId);
+        	}
     	}
-    	else {
-    		throw new EntityNotFoundException("Couldn't find an Employee with ID: " + employeeId);
-    	}
+    	catch(IOException ex) {
+    		// Reset the list to previous state (Transactional Workaround)
+    		employees.clear();
+    		employees.addAll(Arrays.asList(currentState));
+    		throw ex;
+    	}    	
     }
     
     /**
@@ -130,7 +164,7 @@ public class EmployeeRepository {
      * Saves Employees list to JSON file
      */
 	private void save() throws IOException {		
-		try (Writer writer = new FileWriter(ApplicationConstants.FILE_DIR + "/" + ApplicationConstants.FILENAME)) { 
+		try (Writer writer = new FileWriter(ApplicationConstants.FILE_DIR + "/" + ApplicationConstants.FILENAME)) {
 		    Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		    Type type = new TypeToken<List<EmployeeDO>>() {}.getType();
 		    gson.toJson(employees, type, writer);

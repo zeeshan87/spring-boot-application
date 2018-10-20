@@ -56,7 +56,7 @@ public class EmployeeController
     @PutMapping(path ="/{employeeId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Updates an Employee",
-    notes = "Needs to provide non empty FullName, Age <= 18 and non-zero Salary")
+    notes = "Needs to provide non empty FullName, Age <= 18 and positive non-zero Salary")
     public void updateEmployee(
         @PathVariable int employeeId, @Valid @RequestBody EmployeeDTO employeeDTO)
         throws EntityNotFoundException, Exception {

@@ -24,7 +24,7 @@ public class EmployeeDTO
     @ApiModelProperty(notes = "Age of the Employee", required = true, allowableValues = "range[18,]")
     private int age;
     
-    @Min(value = 1, message = "Salary can not be zero!")
+    @Min(value = 1, message = "Salary should be greater than zero!")
     @ApiModelProperty(notes = "Salary of the Employee", required = true, allowableValues = "range[1,]")
     private int salary;
 
