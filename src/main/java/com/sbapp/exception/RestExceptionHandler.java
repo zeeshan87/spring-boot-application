@@ -4,6 +4,7 @@ import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -55,6 +56,15 @@ public class RestExceptionHandler {
 		error.setErrorCode(HttpStatus.METHOD_NOT_ALLOWED.value());
 		error.setMessage("This method is not allowed for this resource");		
 		return new ResponseEntity<ErrorResponse>(error, HttpStatus.METHOD_NOT_ALLOWED);
+	}
+	
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<ErrorResponse> exceptionHttpMessageNotReadableHandler(HttpMessageNotReadableException ex) {
+		LOG.warn("HttpMessageNotReadableException " + ex.getMessage());
+		ErrorResponse error = new ErrorResponse();
+		error.setErrorCode(HttpStatus.BAD_REQUEST.value());
+		error.setMessage("Invalid message body");		
+		return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(Exception.class)

@@ -21,7 +21,7 @@ public class Helper {
 		Reader reader;
 			
 		File file = new File(directory + "/" + fileName);
-		if (file.isFile()) {
+		if (file.isFile()) {System.out.println(file.getAbsolutePath());
 			return file;
 		}
 		File dir = new File(directory);

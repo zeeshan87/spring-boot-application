@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -107,6 +110,20 @@ public class EmployeeRepository {
     	else {
     		throw new EntityNotFoundException("Couldn't find an Employee with ID: " + employeeId);
     	}
+    }
+    
+    /**
+     * Find employees.
+     *
+     * @param predicate - Predicate to filter employees
+     * @param comparator - Comparator to sort employees
+     * @return List of employees
+     */
+    public List<EmployeeDO> find(Predicate<EmployeeDO>  predicate, Comparator<EmployeeDO> comparator) {
+    	return employees.stream()
+    			.filter(predicate)
+    			.sorted(comparator)
+    			.collect(Collectors.toList());
     }
 
     /**
